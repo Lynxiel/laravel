@@ -4,13 +4,14 @@
     </x-slot>
     <h1>Events</h1>
 
-    @foreach ($categories as $category)
-        <span>{{ $category->title }}<span>
-    @endforeach
     <hr>
     <a href="{{route('events.create')}}">Create event</a>
+    <hr>
     @foreach ($events as $event)
-        <p> [ {{$event->category->title}} ] {{ $event->title }}
+        @foreach ($event->categories   as $category )
+            <span>{{$category->title}}</span>
+        @endforeach
+        <p> {{ $event->title }}
             starts at {{$event->begin_datetime }}
             lasts {{$event->duration}} {{Str::plural('hour', $event->duration)}}
             {{$event->formal?'need to look good!':''  }}

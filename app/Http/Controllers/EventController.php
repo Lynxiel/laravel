@@ -11,65 +11,75 @@ use Illuminate\Http\Request;
 class EventController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * Display a listing of the resource.
+    */
     public function index()
     {
-        $events =  Event::with('category')->get();
-        $categories =  Category::all();
-        return view('events/index', compact('events', 'categories'));
+        $events =  Event::with('categories')->get();
+                return view('events/index', compact('events', ));
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
+    * Show the form for creating a new resource.
+    */
     public function create()
     {
-        $categories =  Category::all();
-        return view('events/create', compact('categories'));
+        return view('events/create');
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * Store a newly created resource in storage.
+    */
     public function store(StoreEventRequest $request)
     {
         $validated = $request->validated();
-        Event::create($validated);
+        $event  = Event::create([
+            'title' => $validated['title'],
+            'begin_datetime' => $validated['begin_datetime'],
+            'duration' => $validated['duration'],
+            'formal' => $validated['formal']??false,
+        ]);
+
+        $event->categories()->sync($validated['category_id']);
         return to_route('events.index');
     }
 
     /**
-     * Display the specified resource.
-     */
+    * Display the specified resource.
+    */
     public function show(Event $event)
     {
         return view('events.show' , compact('event'));
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
+    * Show the form for editing the specified resource.
+    */
     public function edit(Event $event)
     {
-        $event = Event::findOrFail($event->id);
-        $categories =  Category::all();
-        return view('events.edit' , compact('event', 'categories'));
+          return view('events.edit' , compact('event'));
     }
 
     /**
-     * Update the specified resource in storage.
-     */
+    * Update the specified resource in storage.
+    */
     public function update(StoreEventRequest $request, Event $event)
     {
-        $event = Event::findOrFail($event->id);
-        $event->update($request->all());
+        $validated = $request->validated();
+        $event->update([
+            'title' => $validated['title'],
+            'begin_datetime' => $validated['begin_datetime'],
+            'duration' => $validated['duration'],
+            'formal' => $validated['formal']??false,
+        ]);
+        $event->categories()->sync($validated['category_id']);
+
         return to_route('events.index');
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * Remove the specified resource from storage.
+    */
     public function destroy(Event $event)
     {
         $event = Event::findOrFail($event->id);

@@ -18,8 +18,9 @@ class Event extends Model
         'formal' => 'boolean',
     ];
 
-    public function category():BelongsTo{
-        return $this->belongsTo(Category::class,  'category_id','id');
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'event_categories', 'event_id', 'category_id');
     }
 
 

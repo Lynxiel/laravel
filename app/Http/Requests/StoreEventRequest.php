@@ -23,12 +23,15 @@ class StoreEventRequest extends FormRequest
      */
     public function rules(  ): array
     {
+        $id = $this->route('id');
         return [
-            'title' => [  'required', 'max:255', 'min:3', Rule::unique('events','title')->ignore($this->route('event')->id)  ],
+            'title' => [  'required', 'max:255', 'min:3', $id
+                ? Rule::unique('events','title')->ignore($id)
+                : Rule::unique('events','title') ],
             'begin_datetime' => 'required|date_format:Y-m-d\TH:i',
             'duration' => 'required',
             'formal'=> 'nullable',
-            'category_id'=>'required|exists:categories,id'
+            'category_id'=>'required|array|exists:categories,id'
         ];
     }
 }

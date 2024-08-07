@@ -12,8 +12,8 @@ class Category extends Model
 
     public $timestamps = false;
 
-    public function events(): HasMany
+    public function events()
     {
-        return $this->hasMany(Event::class,'category_id','id');
+        return $this->belongsToMany(Event::class);
     }
 }

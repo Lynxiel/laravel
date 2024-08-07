@@ -16,17 +16,11 @@
                 @endif
             </div>
             <div>
-                <span>Category</span><br>
-                <select name="category_id">
-                   <option value="" disabled >Choose</option>
-                    @foreach ($categories as $category)
-                        <option label="{{$category->title}}" value="{{$category->id}}"  {{ $category->id==(old('category_id')??$event->category_id)?'selected':''}} />
-                    @endforeach
-                    <option label="Non existent category" value="999" />
-                </select>
+                <x-select name="category_id" model="Category" display="title" value="id" :selected="$event->categories->pluck('id')->toArray()" multiple />
                 @error('category_id')
                    {{ $message }}
                 @endif
+
             </div>
             <div>
                 <span>Begins at</span><br>
